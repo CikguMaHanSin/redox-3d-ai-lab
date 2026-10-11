@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDOX 3D AI LAB - Makmal Digital Pengoksidaan dan Penurunan</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="app-title">REDOX 3D AI LAB</h1>
+                    <p class="app-subtitle">Makmal Digital Pengoksidaan dan Penurunan</p>
+                    <p class="app-tagline">Lihat Pemerhatian. Jejaki Elektron. Fahami Tindak Balas.</p>
+                </div>
+                <button id="help-btn" class="help-button" title="Bantuan">?</button>
+            </div>
+        </header>
+
+        <!-- Navigation Menu -->
+        <nav class="module-nav">
+            <button class="nav-button active" data-module="simulator">
+                <span class="nav-icon">🔬</span>
+                <span class="nav-label">Simulasi Zarah</span>
+            </button>
+            <button class="nav-button" data-module="explorer">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-label">Peneroka Atom-Ion</span>
+            </button>
+            <button class="nav-button" data-module="builder">
+                <span class="nav-icon">⚛️</span>
+                <span class="nav-label">Pembina Setengah Persamaan</span>
+            </button>
+            <button class="nav-button" data-module="experiment">
+                <span class="nav-icon">📸</span>
+                <span class="nav-label">Pemerhatian Eksperimen</span>
+            </button>
+            <button class="nav-button" data-module="quiz">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Kuiz Diagnostik</span>
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- MODUL 1: Interactive Particle Simulator -->
+            <section id="simulator-module" class="module-section active">
+                <div class="module-header">
+                    <h2>Simulasi Zarah Interaktif</h2>
+                    <p class="module-description">Lihat perubahan atom dan ion langkah demi langkah dalam tindak balas magnesium dengan ion kuprum(II)</p>
+                </div>
+
+                <div class="simulator-container">
+                    <!-- Prediction Phase -->
+                    <div class="prediction-phase">
+                        <h3>📌 Langkah 1: Buat Ramalan</h3>
+                        <p>Sebelum anda memulakan simulasi, jawab soalan berikut:</p>
+                        <div class="prediction-question">
+                            <p><strong>Apakah yang akan berlaku kepada elektron atom magnesium dalam tindak balas ini?</strong></p>
+                            <label><input type="radio" name="prediction" value="hilang"> Hilang sepenuhnya</label>
+                            <label><input type="radio" name="prediction" value="pindah"> Dipindahkan ke ion Cu²⁺</label>
+                            <label><input type="radio" name="prediction" value="bertambah"> Bertambah bilangan</label>
+                            <label><input type="radio" name="prediction" value="tak_tahu"> Saya tidak pasti</label>
+                            <button class="btn-primary" id="confirm-prediction">Lanjutkan ke Simulasi</button>
+                        </div>
+                    </div>
+
+                    <!-- Particle Simulator Canvas -->
+                    <div class="simulator-canvas-wrapper">
+                        <div id="particle-canvas" class="particle-canvas"></div>
+                        <div class="canvas-info">
+                            <p id="step-description" class="step-description">Siap untuk memulakan simulasi</p>
+                            <div class="particle-stats">
+                                <div class="stat-box">
+                                    <span class="stat-label">Proton Mg:</span>
+                                    <span class="stat-value" id="mg-protons">12</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Elektron Mg:</span>
+                                    <span class="stat-value" id="mg-electrons">12</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Cas Mg:</span>
+                                    <span class="stat-value" id="mg-charge">0</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Proton Cu:</span>
+                                    <span class="stat-value" id="cu-protons">29</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Elektron Cu:</span>
+                                    <span class="stat-value" id="cu-electrons">29</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-label">Cas Cu:</span>
+                                    <span class="stat-value" id="cu-charge">+2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulation Controls -->
+                    <div class="simulator-controls">
+                        <button class="btn-control" id="play-btn" title="Mainkan simulasi">
+                            <span>▶</span> Main
+                        </button>
+                        <button class="btn-control" id="pause-btn" title="Jeda simulasi">
+                            <span>⏸</span> Jeda
+                        </button>
+                        <button class="btn-control" id="step-forward-btn" title="Langkah seterusnya">
+                            <span>→</span> Langkah Seterusnya
+                        </button>
+                        <button class="btn-control" id="step-back-btn" title="Langkah sebelumnya">
+                            <span>←</span> Langkah Sebelumnya
+                        </button>
+                        <button class="btn-control" id="reset-btn" title="Tetap semula simulasi">
+                            <span>↻</span> Tetap Semula
+                        </button>
+                        <div class="speed-control">
+                            <label for="speed-slider">Laju Animasi:</label>
+                            <input type="range" id="speed-slider" min="0.5" max="2" step="0.5" value="1">
+                            <span id="speed-value">1x</span>
+                        </div>
+                    </div>
+
+                    <!-- Equation Display -->
+                    <div class="equation-display">
+                        <div class="equation-section">
+                            <h4>Setengah Persamaan Pengoksidaan</h4>
+                            <div class="equation" id="oxidation-half-eq">
+                                Mg(s) → Mg²⁺(aq) + 2e⁻
+                            </div>
+                        </div>
+                        <div class="equation-section">
+                            <h4>Setengah Persamaan Penurunan</h4>
+                            <div class="equation" id="reduction-half-eq">
+                                Cu²⁺(aq) + 2e⁻ → Cu(s)
+                            </div>
+                        </div>
+                        <div class="equation-section">
+                            <h4>Persamaan Ion Keseluruhan</h4>
+                            <div class="equation" id="overall-eq">
+                                Mg(s) + Cu²⁺(aq) → Mg²⁺(aq) + Cu(s)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Panel -->
+                    <div class="feedback-panel">
+                        <h4>📋 Maklum Balas</h4>
+                        <div id="feedback-content" class="feedback-content">
+                            Tekan butang "Lanjutkan ke Simulasi" untuk memulakan
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL 2: Atom to Ion Explorer -->
+            <section id="explorer-module" class="module-section">
+                <div class="module-header">
+                    <h2>Peneroka Atom dan Ion</h2>
+                    <p class="module-description">Teroka perubahan bilangan elektron dan bagaimana ia mempengaruhi spesies dan casnya</p>
+                </div>
+
+                <div class="explorer-container">
+                    <div class="species-selector">
+                        <h3>Pilih Spesies</h3>
+                        <div class="species-buttons">
+                            <button class="species-btn active" data-species="mg">Mg</button>
+                            <button class="species-btn" data-species="mg2plus">Mg²⁺</button>
+                            <button class="species-btn" data-species="cu">Cu</button>
+                            <button class="species-btn" data-species="cu2plus">Cu²⁺</button>
+                            <button class="species-btn" data-species="na">Na</button>
+                            <button class="species-btn" data-species="naplus">Na⁺</button>
+                            <button class="species-btn" data-species="cl">Cl</button>
+                            <button class="species-btn" data-species="clminus">Cl⁻</button>
+                        </div>
+                    </div>
+
+                    <div class="explorer-display">
+                        <div id="explorer-canvas" class="explorer-canvas"></div>
+                    </div>
+
+                    <div class="explorer-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Nama Spesies:</span>
+                                <span class="info-value" id="explorer-name">Magnesium</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Simbol Kimia:</span>
+                                <span class="info-value" id="explorer-symbol">Mg</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Bilangan Proton:</span>
+                                <span class="info-value" id="explorer-protons">12</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Bilangan Elektron:</span>
+                                <span class="info-value" id="explorer-electrons">12</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Cas Keseluruhan:</span>
+                                <span class="info-value" id="explorer-charge">0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Jenis Spesies:</span>
+                                <span class="info-value" id="explorer-type">Atom Neutral</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="explorer-controls">
+                        <button class="btn-primary" id="add-electron-btn">➕ Tambah Elektron</button>
+                        <button class="btn-primary" id="remove-electron-btn">➖ Buang Elektron</button>
+                        <button class="btn-secondary" id="reset-explorer-btn">Tetap Semula</button>
+                    </div>
+
+                    <div class="explorer-explanation">
+                        <h4>Penjelasan</h4>
+                        <div id="explorer-text">
+                            Atom magnesium (Mg) mempunyai 12 proton dan 12 elektron, oleh itu casnya ialah 0 (neutral). Apabila elektron dibuang, bilangan proton kekal 12, tetapi bilangan elektron berkurang, menghasilkan cas positif.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL 3: Half-Equation Builder -->
+            <section id="builder-module" class="module-section">
+                <div class="module-header">
+                    <h2>Pembina Setengah Persamaan</h2>
+                    <p class="module-description">Bina setengah persamaan pengoksidaan dan penurunan dengan betul</p>
+                </div>
+
+                <div class="builder-container">
+                    <div class="builder-instructions">
+                        <p>Seret dan lepas komponen untuk membina setengah persamaan. Pastikan:</p>
+                        <ul>
+                            <li>✓ Bilangan atom seimbang di kedua-dua belah persamaan</li>
+                            <li>✓ Jumlah cas seimbang di kedua-dua belah</li>
+                            <li>✓ Bilangan elektron yang ditunjukkan adalah betul</li>
+                            <li>✓ Arah kehilangan atau penerimaan elektron adalah tepat</li>
+                        </ul>
+                    </div>
+
+                    <div class="builder-section">
+                        <h3>Setengah Persamaan Pengoksidaan</h3>
+                        <div class="equation-builder">
+                            <div class="builder-left">
+                                <div class="builder-dropzone" id="ox-left">
+                                    <!-- Murid menyeret komponen ke sini -->
+                                </div>
+                            </div>
+                            <div class="builder-arrow">→</div>
+                            <div class="builder-right">
+                                <div class="builder-dropzone" id="ox-right">
+                                    <!-- Hasil pengoksidaan -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ox-feedback" class="equation-feedback"></div>
+                        <button class="btn-primary" id="check-ox-btn">Periksa Setengah Persamaan</button>
+                    </div>
+
+                    <div class="builder-section">
+                        <h3>Setengah Persamaan Penurunan</h3>
+                        <div class="equation-builder">
+                            <div class="builder-left">
+                                <div class="builder-dropzone" id="red-left">
+                                    <!-- Murid menyeret komponen ke sini -->
+                                </div>
+                            </div>
+                            <div class="builder-arrow">→</div>
+                            <div class="builder-right">
+                                <div class="builder-dropzone" id="red-right">
+                                    <!-- Hasil penurunan -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="red-feedback" class="equation-feedback"></div>
+                        <button class="btn-primary" id="check-red-btn">Periksa Setengah Persamaan</button>
+                    </div>
+
+                    <div class="components-panel">
+                        <h3>Komponen Tersedia</h3>
+                        <div class="components-grid" id="components-grid">
+                            <!-- Komponen akan dipaparkan di sini -->
+                        </div>
+                    </div>
+
+                    <div class="builder-hint">
+                        <p id="builder-hint-text">Mulakan dengan menyeret Mg ke sebelah kiri persamaan pengoksidaan</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL 4: Real Experiment Observation -->
+            <section id="experiment-module" class="module-section">
+                <div class="module-header">
+                    <h2>Pemerhatian Eksperimen</h2>
+                    <p class="module-description">Hubungkan pemerhatian eksperimen sebenar dengan penjelasan aras zarah</p>
+                </div>
+
+                <div class="experiment-container">
+                    <div class="experiment-layout">
+                        <div class="experiment-panel left-panel">
+                            <h3>📸 Pemerhatian Eksperimen</h3>
+                            <div class="experiment-video-placeholder">
+                                <p>Video Eksperimen</p>
+                                <p class="small-text">(Video URL akan ditambah oleh guru)</p>
+                            </div>
+                            <div class="experiment-observations">
+                                <h4>Pemerhatian Utama:</h4>
+                                <ul>
+                                    <li>Pita magnesium berubah warna dan berangsur hilang</li>
+                                    <li>Larutan biru berubah menjadi kurang pekat atau tidak berwarna</li>
+                                    <li>Salutan atau mendapan berwarna perang kemerahan terbentuk pada permukaan magnesium</li>
+                                    <li>Tindak balas berlangsung dengan pantas</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="experiment-panel right-panel">
+                            <h3>⚛️ Penjelasan Aras Zarah</h3>
+                            <div id="experiment-particle-visual" class="particle-visual"></div>
+                            <div class="experiment-explanation-text">
+                                <p><strong>Apa yang berlaku di aras zarah:</strong></p>
+                                <ol>
+                                    <li>Atom Mg kehilangan 2 elektron menjadi ion Mg²⁺</li>
+                                    <li>Ion Cu²⁺ menerima 2 elektron menjadi atom Cu neutral</li>
+                                    <li>Atom Cu yang terbentuk melekat pada permukaan magnesium (salutan perang kemerahan)</li>
+                                    <li>Ion Cu²⁺ berkurang, maka larutan biru menjadi kurang pekat</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="experiment-questions">
+                        <h3>Soalan Diagnostik</h3>
+                        <div class="question-card">
+                            <p><strong>1. Apakah punca perubahan warna larutan daripada biru menjadi kurang pekat?</strong></p>
+                            <textarea class="answer-input" id="answer-1" placeholder="Tulis jawapan anda..."></textarea>
+                            <button class="btn-check" onclick="checkExperimentAnswer(1)">Periksa Jawapan</button>
+                            <div class="answer-feedback" id="feedback-1"></div>
+                        </div>
+                        <div class="question-card">
+                            <p><strong>2. Mengapa salutan berwarna perang kemerahan terbentuk di permukaan magnesium?</strong></p>
+                            <textarea class="answer-input" id="answer-2" placeholder="Tulis jawapan anda..."></textarea>
+                            <button class="btn-check" onclick="checkExperimentAnswer(2)">Periksa Jawapan</button>
+                            <div class="answer-feedback" id="feedback-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODUL 5: Diagnostic Quiz -->
+            <section id="quiz-module" class="module-section">
+                <div class="module-header">
+                    <h2>Kuiz Diagnostik</h2>
+                    <p class="module-description">Uji pemahaman anda tentang konsep redoks melalui soalan pelbagai jenis</p>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-progress">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text">Soalan 0 daripada 10</p>
+                    </div>
+
+                    <div id="quiz-questions" class="quiz-questions">
+                        <!-- Soalan akan dimuatkan di sini menggunakan JavaScript -->
+                    </div>
+
+                    <div id="quiz-results" class="quiz-results" style="display: none;">
+                        <h3>Hasil Kuiz</h3>
+                        <div class="result-summary">
+                            <div class="score-display">
+                                <p class="score-value" id="final-score">0</p>
+                                <p class="score-label">Markah Anda</p>
+                            </div>
+                            <div class="result-breakdown">
+                                <p id="result-text"></p>
+                                <div id="concept-analysis" class="concept-analysis"></div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="retake-quiz-btn">Ambil Kuiz Semula</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeHelpModal()">&times;</span>
+                <h2>Bantuan - Panduan Penggunaan</h2>
+                <div class="help-content">
+                    <h3>Modul Simulasi Zarah</h3>
+                    <p>Lihat bagaimana atom dan ion berubah selama tindak balas antara magnesium dengan ion kuprum(II). Gunakan butang kawalan untuk memainkan, berhenti, atau melalui simulasi langkah demi langkah.</p>
+
+                    <h3>Modul Peneroka Atom-Ion</h3>
+                    <p>Teroka perubahan spesies dengan menambah atau mengeluarkan elektron. Lihat bagaimana ini mempengaruhi bilangan proton, elektron, cas dan jenis spesies.</p>
+
+                    <h3>Modul Pembina Setengah Persamaan</h3>
+                    <p>Bina setengah persamaan pengoksidaan dan penurunan dengan menyeret komponen. Sistem akan menyemak keseimbangan atom, cas dan elektron.</p>
+
+                    <h3>Modul Pemerhatian Eksperimen</h3>
+                    <p>Lihat pemerhatian eksperimen sebenar dan penjelasan aras zarah yang sepadan. Jawab soalan untuk menghubungkan makro dan submikroskopik.</p>
+
+                    <h3>Modul Kuiz Diagnostik</h3>
+                    <p>Jawab 10 soalan untuk menguji pemahaman anda tentang pengoksidaan, penurunan, agen dan persamaan ion.</p>
+
+                    <p><strong>Petua:</strong> Gunakan Bahasa Melayu untuk semua jawapan. Baca soalan dengan teliti sebelum menjawab.</p>
+                </div>
+                <button class="btn-secondary" onclick="closeHelpModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>REDOX 3D AI LAB © 2025 | Aplikasi Pembelajaran Interaktif Kimia KSSM</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
